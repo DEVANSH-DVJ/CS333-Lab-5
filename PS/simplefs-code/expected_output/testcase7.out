@@ -1,0 +1,99 @@
+Creating file 0_.txt: 0
+Writing Data: 0
+Writing Data: 0
+Writing Data: 0
+Writing Data: 0
+Creating file 1_.txt: 1
+Writing Data: 0
+Writing Data: 0
+Writing Data: 0
+Writing Data: 0
+Creating file 2_.txt: 2
+Writing Data: 0
+Writing Data: 0
+Writing Data: 0
+Writing Data: 0
+Creating file 3_.txt: 3
+Writing Data: 0
+Writing Data: 0
+Writing Data: 0
+Writing Data: 0
+Creating file 4_.txt: 4
+Writing Data: 0
+Writing Data: 0
+Writing Data: 0
+Writing Data: 0
+Creating file 5_.txt: 5
+Writing Data: 0
+Writing Data: 0
+Writing Data: 0
+Writing Data: 0
+Creating file 6_.txt: 6
+Writing Data: 0
+Writing Data: 0
+Writing Data: 0
+Writing Data: 0
+Creating file 7_.txt: 7
+Writing Data: 0
+Writing Data: 0
+Writing Data: -1
+Writing Data: -1
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<DISK STATE>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+DISK NAME: simplefs
+INODE FREELIST:	1	1	1	1	1	1	1	1	
+DATA BLOCK FREELIST:	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	
+INODE 0
+STATUS:	1	NAME	0_.txt	SIZE	256	DATABLOCK	0	1	2	3	
+DATA BLOCK 0: !-----------------------64 Bytes of Data-----------------------!
+DATA BLOCK 1: !-----------------------64 Bytes of Data-----------------------!
+DATA BLOCK 2: !-----------------------64 Bytes of Data-----------------------!
+DATA BLOCK 3: !-----------------------64 Bytes of Data-----------------------!
+
+INODE 1
+STATUS:	1	NAME	1_.txt	SIZE	256	DATABLOCK	4	5	6	7	
+DATA BLOCK 0: !-----------------------64 Bytes of Data-----------------------!
+DATA BLOCK 1: !-----------------------64 Bytes of Data-----------------------!
+DATA BLOCK 2: !-----------------------64 Bytes of Data-----------------------!
+DATA BLOCK 3: !-----------------------64 Bytes of Data-----------------------!
+
+INODE 2
+STATUS:	1	NAME	2_.txt	SIZE	256	DATABLOCK	8	9	10	11	
+DATA BLOCK 0: !-----------------------64 Bytes of Data-----------------------!
+DATA BLOCK 1: !-----------------------64 Bytes of Data-----------------------!
+DATA BLOCK 2: !-----------------------64 Bytes of Data-----------------------!
+DATA BLOCK 3: !-----------------------64 Bytes of Data-----------------------!
+
+INODE 3
+STATUS:	1	NAME	3_.txt	SIZE	256	DATABLOCK	12	13	14	15	
+DATA BLOCK 0: !-----------------------64 Bytes of Data-----------------------!
+DATA BLOCK 1: !-----------------------64 Bytes of Data-----------------------!
+DATA BLOCK 2: !-----------------------64 Bytes of Data-----------------------!
+DATA BLOCK 3: !-----------------------64 Bytes of Data-----------------------!
+
+INODE 4
+STATUS:	1	NAME	4_.txt	SIZE	256	DATABLOCK	16	17	18	19	
+DATA BLOCK 0: !-----------------------64 Bytes of Data-----------------------!
+DATA BLOCK 1: !-----------------------64 Bytes of Data-----------------------!
+DATA BLOCK 2: !-----------------------64 Bytes of Data-----------------------!
+DATA BLOCK 3: !-----------------------64 Bytes of Data-----------------------!
+
+INODE 5
+STATUS:	1	NAME	5_.txt	SIZE	256	DATABLOCK	20	21	22	23	
+DATA BLOCK 0: !-----------------------64 Bytes of Data-----------------------!
+DATA BLOCK 1: !-----------------------64 Bytes of Data-----------------------!
+DATA BLOCK 2: !-----------------------64 Bytes of Data-----------------------!
+DATA BLOCK 3: !-----------------------64 Bytes of Data-----------------------!
+
+INODE 6
+STATUS:	1	NAME	6_.txt	SIZE	256	DATABLOCK	24	25	26	27	
+DATA BLOCK 0: !-----------------------64 Bytes of Data-----------------------!
+DATA BLOCK 1: !-----------------------64 Bytes of Data-----------------------!
+DATA BLOCK 2: !-----------------------64 Bytes of Data-----------------------!
+DATA BLOCK 3: !-----------------------64 Bytes of Data-----------------------!
+
+INODE 7
+STATUS:	1	NAME	7_.txt	SIZE	128	DATABLOCK	28	29	-1	-1	
+DATA BLOCK 0: !-----------------------64 Bytes of Data-----------------------!
+DATA BLOCK 1: !-----------------------64 Bytes of Data-----------------------!
+
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>

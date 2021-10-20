@@ -1,0 +1,39 @@
+Creating file 0_.txt: 0
+Creating file 1_.txt: 1
+Creating file 2_.txt: 2
+Creating file 3_.txt: 3
+Creating file 4_.txt: 4
+Creating file 5_.txt: 5
+Creating file 6_.txt: 6
+Creating file 7_.txt: 7
+Creating file 8_.txt: -1
+Creating file 9_.txt: -1
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<DISK STATE>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+DISK NAME: simplefs
+INODE FREELIST:	1	1	1	1	1	1	1	1	
+DATA BLOCK FREELIST:	x	x	x	x	x	x	x	x	x	x	x	x	x	x	x	x	x	x	x	x	x	x	x	x	x	x	x	x	x	x	
+INODE 0
+STATUS:	1	NAME	0_.txt	SIZE	0	DATABLOCK	-1	-1	-1	-1	
+
+INODE 1
+STATUS:	1	NAME	1_.txt	SIZE	0	DATABLOCK	-1	-1	-1	-1	
+
+INODE 2
+STATUS:	1	NAME	2_.txt	SIZE	0	DATABLOCK	-1	-1	-1	-1	
+
+INODE 3
+STATUS:	1	NAME	3_.txt	SIZE	0	DATABLOCK	-1	-1	-1	-1	
+
+INODE 4
+STATUS:	1	NAME	4_.txt	SIZE	0	DATABLOCK	-1	-1	-1	-1	
+
+INODE 5
+STATUS:	1	NAME	5_.txt	SIZE	0	DATABLOCK	-1	-1	-1	-1	
+
+INODE 6
+STATUS:	1	NAME	6_.txt	SIZE	0	DATABLOCK	-1	-1	-1	-1	
+
+INODE 7
+STATUS:	1	NAME	7_.txt	SIZE	0	DATABLOCK	-1	-1	-1	-1	
+
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>

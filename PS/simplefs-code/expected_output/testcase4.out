@@ -1,0 +1,31 @@
+Write Data: 0
+Seek: 0
+Write Data: 0
+Seek: 0
+Write Data: 0
+Seek: 0
+Write Data: 0
+Seek: 0
+Read Data 0
+Data: !-----------------------70 Bytes of Data-----------------------------!
+Seek: 0
+Read Data 0
+Data: !-----------------------70 Bytes of Data-----------------------------!
+Seek: 0
+Read Data 0
+Data: !-----------------------70 Bytes of Data-----------------------------!
+Seek: 0
+Read Data 0
+Data: !-------------46 Bytes of Data---------------!
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<DISK STATE>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+DISK NAME: simplefs
+INODE FREELIST:	1	x	x	x	x	x	x	x	
+DATA BLOCK FREELIST:	1	1	1	1	x	x	x	x	x	x	x	x	x	x	x	x	x	x	x	x	x	x	x	x	x	x	x	x	x	x	
+INODE 0
+STATUS:	1	NAME	fileabc	SIZE	256	DATABLOCK	0	1	2	3	
+DATA BLOCK 0: !-----------------------70 Bytes of Data------------------------
+DATA BLOCK 1: -----!!-----------------------70 Bytes of Data------------------
+DATA BLOCK 2: -----------!!-----------------------70 Bytes of Data------------
+DATA BLOCK 3: -----------------!!-------------46 Bytes of Data---------------!
+
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
