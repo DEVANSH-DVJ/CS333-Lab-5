@@ -49,8 +49,10 @@ void simplefs_delete(char *filename) {
     }
   }
 
-  if (inode_no == NUM_BLOCKS)
+  if (inode_no == NUM_BLOCKS) {
+    free(inode);
     return;
+  }
 
   for (int j = 0; j < MAX_FILE_SIZE; j++) {
     if (inode->direct_blocks[j] == -1)
