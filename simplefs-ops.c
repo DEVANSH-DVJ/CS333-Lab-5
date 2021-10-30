@@ -6,8 +6,10 @@ extern struct filehandle_t file_handle_array[MAX_OPEN_FILES];
 //  Create file with name `filename` from disk
 int simplefs_create(char *filename) {
   struct inode_t *inode = (struct inode_t *)malloc(sizeof(struct inode_t));
-  for (int i = 0; i < NUM_INODES; i++) {
-    simplefs_readInode(i, inode);
+  int inode_no;
+
+  for (inode_no = 0; inode_no < NUM_INODES; inode_no++) {
+    simplefs_readInode(inode_no, inode);
     if (inode->status == INODE_FREE)
       continue;
     if (!strcmp(inode->name, filename)) {
@@ -16,7 +18,7 @@ int simplefs_create(char *filename) {
     }
   }
 
-  int inode_no = simplefs_allocInode();
+  inode_no = simplefs_allocInode();
   if (inode_no == -1) {
     free(inode);
     return -1;
