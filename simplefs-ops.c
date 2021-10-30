@@ -97,8 +97,14 @@ int simplefs_open(char *filename) {
   return file_handle;
 }
 
+//  close file pointed by `file_handle`
 void simplefs_close(int file_handle) {
-  //  close file pointed by `file_handle`
+  if (file_handle >= MAX_OPEN_FILES)
+    return;
+
+  file_handle_array[file_handle].inode_number = -1;
+  file_handle_array[file_handle].offset = 0;
+  return;
 }
 
 int simplefs_read(int file_handle, char *buf, int nbytes) {
