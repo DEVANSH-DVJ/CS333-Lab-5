@@ -6,10 +6,10 @@ extern struct filehandle_t file_handle_array[MAX_OPEN_FILES];
 //  Create file with name `filename` from disk
 int simplefs_create(char *filename) {
   struct inode_t *inode = (struct inode_t *)malloc(sizeof(struct inode_t));
-  int inode_no;
+  int inodenum;
 
-  for (inode_no = 0; inode_no < NUM_INODES; inode_no++) {
-    simplefs_readInode(inode_no, inode);
+  for (inodenum = 0; inodenum < NUM_INODES; inodenum++) {
+    simplefs_readInode(inodenum, inode);
     if (inode->status == INODE_FREE)
       continue;
     if (!strcmp(inode->name, filename)) {
@@ -18,8 +18,8 @@ int simplefs_create(char *filename) {
     }
   }
 
-  inode_no = simplefs_allocInode();
-  if (inode_no == -1) {
+  inodenum = simplefs_allocInode();
+  if (inodenum == -1) {
     free(inode);
     return -1;
   }
@@ -29,19 +29,19 @@ int simplefs_create(char *filename) {
   for (int i = 0; i < MAX_FILE_SIZE; i++)
     inode->direct_blocks[i] = -1;
   strcpy(inode->name, filename);
-  simplefs_writeInode(inode_no, inode);
+  simplefs_writeInode(inodenum, inode);
   free(inode);
 
-  return inode_no;
+  return inodenum;
 }
 
 //  delete file with name `filename` from disk
 void simplefs_delete(char *filename) {
   struct inode_t *inode = (struct inode_t *)malloc(sizeof(struct inode_t));
-  int inode_no;
+  int inodenum;
 
-  for (inode_no = 0; inode_no < NUM_INODES; inode_no++) {
-    simplefs_readInode(inode_no, inode);
+  for (inodenum = 0; inodenum < NUM_INODES; inodenum++) {
+    simplefs_readInode(inodenum, inode);
     if (inode->status == INODE_FREE)
       continue;
     if (!strcmp(inode->name, filename)) {
@@ -49,7 +49,7 @@ void simplefs_delete(char *filename) {
     }
   }
 
-  if (inode_no == NUM_BLOCKS) {
+  if (inodenum == NUM_BLOCKS) {
     free(inode);
     return;
   }
@@ -59,7 +59,7 @@ void simplefs_delete(char *filename) {
       continue;
     simplefs_freeDataBlock(inode->direct_blocks[j]);
   }
-  simplefs_freeInode(inode_no);
+  simplefs_freeInode(inodenum);
   free(inode);
 
   return;
@@ -68,10 +68,10 @@ void simplefs_delete(char *filename) {
 //  open file with name `filename`
 int simplefs_open(char *filename) {
   struct inode_t *inode = (struct inode_t *)malloc(sizeof(struct inode_t));
-  int inode_no;
+  int inodenum;
 
-  for (inode_no = 0; inode_no < NUM_INODES; inode_no++) {
-    simplefs_readInode(inode_no, inode);
+  for (inodenum = 0; inodenum < NUM_INODES; inodenum++) {
+    simplefs_readInode(inodenum, inode);
     if (inode->status == INODE_FREE)
       continue;
     if (!strcmp(inode->name, filename)) {
@@ -80,14 +80,14 @@ int simplefs_open(char *filename) {
   }
   free(inode);
 
-  if (inode_no == NUM_BLOCKS)
+  if (inodenum == NUM_BLOCKS)
     return -1;
 
   int file_handle;
   for (file_handle = 0; file_handle < MAX_OPEN_FILES; file_handle++) {
     if (file_handle_array[file_handle].inode_number != -1)
       continue;
-    file_handle_array[file_handle].inode_number = inode_no;
+    file_handle_array[file_handle].inode_number = inodenum;
     file_handle_array[file_handle].offset = 0;
     break;
   }
