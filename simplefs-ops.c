@@ -3,9 +3,34 @@
 // Array for storing opened files
 extern struct filehandle_t file_handle_array[MAX_OPEN_FILES];
 
+//  Create file with name `filename` from disk
 int simplefs_create(char *filename) {
-  //  Create file with name `filename` from disk
-  return -1;
+  struct inode_t *inode = (struct inode_t *)malloc(sizeof(struct inode_t));
+  for (int i = 0; i < NUM_INODES; i++) {
+    simplefs_readInode(i, inode);
+    if (inode->status == INODE_FREE)
+      continue;
+    if (!strcmp(inode->name, filename)) {
+      free(inode);
+      return 1;
+    }
+  }
+
+  int inode_no = simplefs_allocInode();
+  if (inode_no == -1) {
+    free(inode);
+    return -1;
+  }
+
+  inode->status = INODE_IN_USE;
+  inode->file_size = 0;
+  for (int i = 0; i < MAX_FILE_SIZE; i++)
+    inode->direct_blocks[i] = -1;
+  strcpy(inode->name, filename);
+  simplefs_writeInode(inode_no, inode);
+  free(inode);
+
+  return inode_no;
 }
 
 void simplefs_delete(char *filename) {
