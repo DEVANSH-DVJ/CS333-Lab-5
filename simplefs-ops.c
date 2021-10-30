@@ -119,7 +119,22 @@ int simplefs_write(int file_handle, char *buf, int nbytes) {
   return -1;
 }
 
+// increase `file_handle` offset by `nseek`
 int simplefs_seek(int file_handle, int nseek) {
-  // increase `file_handle` offset by `nseek`
-  return -1;
+  int new_offset = file_handle_array[file_handle].offset + nseek;
+
+  if (new_offset < 0)
+    return -1;
+
+  int inodenum = file_handle_array[file_handle].inode_number;
+  struct inode_t *inode = (struct inode_t *)malloc(sizeof(struct inode_t));
+  simplefs_readInode(inodenum, inode);
+  if (new_offset > inode->file_size) {
+    free(inode);
+    return -1;
+  }
+
+  file_handle_array[file_handle].offset = new_offset;
+  free(inode);
+  return 0;
 }
