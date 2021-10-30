@@ -33,8 +33,32 @@ int simplefs_create(char *filename) {
   return inode_no;
 }
 
+//  delete file with name `filename` from disk
 void simplefs_delete(char *filename) {
-  //  delete file with name `filename` from disk
+  struct inode_t *inode = (struct inode_t *)malloc(sizeof(struct inode_t));
+  int inode_no;
+
+  for (inode_no = 0; inode_no < NUM_INODES; inode_no++) {
+    simplefs_readInode(inode_no, inode);
+    if (inode->status == INODE_FREE)
+      continue;
+    if (!strcmp(inode->name, filename)) {
+      break;
+    }
+  }
+
+  if (inode_no == NUM_BLOCKS)
+    return;
+
+  for (int j = 0; j < MAX_FILE_SIZE; j++) {
+    if (inode->direct_blocks[j] == -1)
+      continue;
+    simplefs_freeDataBlock(inode->direct_blocks[j]);
+  }
+  simplefs_freeInode(inode_no);
+  free(inode);
+
+  return;
 }
 
 int simplefs_open(char *filename) {
