@@ -63,9 +63,36 @@ void simplefs_delete(char *filename) {
   return;
 }
 
+//  open file with name `filename`
 int simplefs_open(char *filename) {
-  //  open file with name `filename`
-  return -1;
+  struct inode_t *inode = (struct inode_t *)malloc(sizeof(struct inode_t));
+  int inode_no;
+
+  for (inode_no = 0; inode_no < NUM_INODES; inode_no++) {
+    simplefs_readInode(inode_no, inode);
+    if (inode->status == INODE_FREE)
+      continue;
+    if (!strcmp(inode->name, filename)) {
+      break;
+    }
+  }
+  free(inode);
+
+  if (inode_no == NUM_BLOCKS)
+    return -1;
+
+  int file_handle;
+  for (file_handle = 0; file_handle < MAX_OPEN_FILES; file_handle++) {
+    if (file_handle_array[file_handle].inode_number != -1)
+      continue;
+    file_handle_array[file_handle].inode_number = inode_no;
+    file_handle_array[file_handle].offset = 0;
+    break;
+  }
+
+  if (file_handle == MAX_OPEN_FILES)
+    return -1;
+  return file_handle;
 }
 
 void simplefs_close(int file_handle) {
