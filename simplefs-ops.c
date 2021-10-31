@@ -210,6 +210,72 @@ int simplefs_write(int file_handle, char *buf, int nbytes) {
   if (inode->file_size < offset + nbytes)
     inode->file_size = offset + nbytes;
   simplefs_writeInode(inodenum, inode);
+
+  char tempBlockBuf[BLOCKSIZE];
+  int tempset = 0;
+  for (int i = 0; i < NUM_DATA_BLOCKS; i++) {
+    if (inode->direct_blocks[i] == -1)
+      break;
+
+    if (offset + nbytes < i * BLOCKSIZE)
+      break;
+
+    int is_new = 0;
+    if (first_new <= i)
+      is_new = 1;
+
+    if (offset + tempset == i * BLOCKSIZE &&
+        offset + nbytes >= (i + 1) * BLOCKSIZE) {
+      if (!is_new) {
+        simplefs_readDataBlock(inode->direct_blocks[i], tempBlockBuf);
+      }
+      memcpy(tempBlockBuf, buf + tempset, BLOCKSIZE);
+      simplefs_writeDataBlock(inode->direct_blocks[i], tempBlockBuf);
+      tempset += BLOCKSIZE;
+      continue;
+    }
+
+    if (offset + tempset > i * BLOCKSIZE &&
+        offset + tempset <= (i + 1) * BLOCKSIZE &&
+        offset + nbytes >= (i + 1) * BLOCKSIZE) {
+      int ls = offset - (i * BLOCKSIZE);
+      if (!is_new) {
+        simplefs_readDataBlock(inode->direct_blocks[i], tempBlockBuf);
+      }
+      memcpy(tempBlockBuf + ls, buf + tempset, BLOCKSIZE - ls);
+      simplefs_writeDataBlock(inode->direct_blocks[i], tempBlockBuf);
+      tempset += BLOCKSIZE - ls;
+      continue;
+    }
+
+    if (offset + tempset == i * BLOCKSIZE &&
+        offset + nbytes < (i + 1) * BLOCKSIZE) {
+      int rs = (i + 1) * BLOCKSIZE - (offset + nbytes);
+      if (!is_new) {
+        simplefs_readDataBlock(inode->direct_blocks[i], tempBlockBuf);
+      }
+      memcpy(tempBlockBuf, buf + tempset, BLOCKSIZE - rs);
+      simplefs_writeDataBlock(inode->direct_blocks[i], tempBlockBuf);
+      tempset += BLOCKSIZE - rs;
+      continue;
+    }
+
+    if (offset + tempset > i * BLOCKSIZE &&
+        offset + nbytes < (i + 1) * BLOCKSIZE) {
+      int ls = offset - (i * BLOCKSIZE);
+      int rs = (i + 1) * BLOCKSIZE - (offset + nbytes);
+      if (!is_new) {
+        simplefs_readDataBlock(inode->direct_blocks[i], tempBlockBuf);
+      }
+      memcpy(tempBlockBuf + ls, buf + tempset, BLOCKSIZE - ls - rs);
+      simplefs_writeDataBlock(inode->direct_blocks[i], tempBlockBuf);
+      tempset += BLOCKSIZE - ls - rs;
+      continue;
+    }
+  }
+
+  free(inode);
+  return 0;
 }
 
 // increase `file_handle` offset by `nseek`
