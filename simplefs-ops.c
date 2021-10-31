@@ -187,6 +187,26 @@ int simplefs_write(int file_handle, char *buf, int nbytes) {
     free(inode);
     return -1;
   }
+
+  int first_new = -1;
+  for (int i = 0; i < req_blocks; i++) {
+    if (inode->direct_blocks[i] != -1)
+      continue;
+
+    if (first_new == -1)
+      first_new = 1;
+
+    if (inode->direct_blocks[i] != -1)
+      continue;
+
+    for (; i >= first_new; i--) {
+      simplefs_freeDataBlock(inode->direct_blocks[i]);
+      inode->direct_blocks[i] = -1;
+    }
+    free(inode);
+    return -1;
+  }
+  simplefs_writeInode(inodenum, inode);
 }
 
 // increase `file_handle` offset by `nseek`
