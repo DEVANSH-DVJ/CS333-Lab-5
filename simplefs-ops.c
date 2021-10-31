@@ -187,18 +187,18 @@ int simplefs_write(int file_handle, char *buf, int nbytes) {
   struct inode_t *inode = (struct inode_t *)malloc(sizeof(struct inode_t));
   simplefs_readInode(inodenum, inode);
 
-  int req_blocks = (offset + nbytes) / BLOCKSIZE;
+  int req_blocks = (offset + nbytes - 1) / BLOCKSIZE + 1;
   if (req_blocks > MAX_FILE_SIZE) {
     free(inode);
     return -1;
   }
 
-  int first_new = -1;
+  int first_new = MAX_FILE_SIZE;
   for (int i = 0; i < req_blocks; i++) {
     if (inode->direct_blocks[i] != -1)
       continue;
 
-    if (first_new == -1)
+    if (first_new == MAX_FILE_SIZE)
       first_new = i;
 
     inode->direct_blocks[i] = simplefs_allocDataBlock();
@@ -218,11 +218,11 @@ int simplefs_write(int file_handle, char *buf, int nbytes) {
 
   char tempBlockBuf[BLOCKSIZE];
   int tempset = 0;
-  for (int i = 0; i < NUM_DATA_BLOCKS; i++) {
+  for (int i = 0; i < MAX_FILE_SIZE; i++) {
     if (inode->direct_blocks[i] == -1)
       break;
 
-    if (offset + nbytes < i * BLOCKSIZE)
+    if (offset + nbytes <= i * BLOCKSIZE)
       break;
 
     int is_new = 0;
