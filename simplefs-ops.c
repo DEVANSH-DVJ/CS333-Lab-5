@@ -133,14 +133,17 @@ int simplefs_read(int file_handle, char *buf, int nbytes) {
     if (offset + nbytes < i * BLOCKSIZE)
       break;
 
-    if (offset <= i * BLOCKSIZE && offset + nbytes >= (i + 1) * BLOCKSIZE) {
+    if (offset + tempset == i * BLOCKSIZE &&
+        offset + nbytes >= (i + 1) * BLOCKSIZE) {
       simplefs_readDataBlock(inode->direct_blocks[i], tempBlockBuf);
       memcpy(tempBuf + tempset, tempBlockBuf, BLOCKSIZE);
       tempset += BLOCKSIZE;
       continue;
     }
 
-    if (offset > i * BLOCKSIZE && offset + nbytes >= (i + 1) * BLOCKSIZE) {
+    if (offset + tempset > i * BLOCKSIZE &&
+        offset + tempset <= (i + 1) * BLOCKSIZE &&
+        offset + nbytes >= (i + 1) * BLOCKSIZE) {
       int ls = offset - (i * BLOCKSIZE);
       simplefs_readDataBlock(inode->direct_blocks[i], tempBlockBuf);
       memcpy(tempBuf + tempset, tempBlockBuf + ls, BLOCKSIZE - ls);
@@ -148,7 +151,8 @@ int simplefs_read(int file_handle, char *buf, int nbytes) {
       continue;
     }
 
-    if (offset <= i * BLOCKSIZE && offset + nbytes < (i + 1) * BLOCKSIZE) {
+    if (offset + tempset == i * BLOCKSIZE &&
+        offset + nbytes < (i + 1) * BLOCKSIZE) {
       int rs = (i + 1) * BLOCKSIZE - (offset + nbytes);
       simplefs_readDataBlock(inode->direct_blocks[i], tempBlockBuf);
       memcpy(tempBuf + tempset, tempBlockBuf, BLOCKSIZE - rs);
@@ -156,7 +160,8 @@ int simplefs_read(int file_handle, char *buf, int nbytes) {
       continue;
     }
 
-    if (offset > i * BLOCKSIZE && offset + nbytes < (i + 1) * BLOCKSIZE) {
+    if (offset + tempset > i * BLOCKSIZE &&
+        offset + nbytes < (i + 1) * BLOCKSIZE) {
       int ls = offset - (i * BLOCKSIZE);
       int rs = (i + 1) * BLOCKSIZE - (offset + nbytes);
       simplefs_readDataBlock(inode->direct_blocks[i], tempBlockBuf);
