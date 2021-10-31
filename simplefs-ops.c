@@ -205,7 +205,7 @@ int simplefs_write(int file_handle, char *buf, int nbytes) {
     if (inode->direct_blocks[i] != -1)
       continue;
 
-    for (; i >= first_new; i--) {
+    for (i--; i >= first_new; i--) {
       simplefs_freeDataBlock(inode->direct_blocks[i]);
       inode->direct_blocks[i] = -1;
     }
