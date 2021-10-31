@@ -5,8 +5,8 @@ int DISK_FD;
 // Array for storing opened files
 struct filehandle_t file_handle_array[MAX_OPEN_FILES];
 
+// Helper function to read superblock from disk into superblock_t structure
 void simplefs_readSuperBlock(struct superblock_t *superblock) {
-  // Helper function to read superblock from disk into superblock_t structure
   char tempBuf[BLOCKSIZE];
   lseek(DISK_FD, 0, SEEK_SET);
   int ret = read(DISK_FD, tempBuf, BLOCKSIZE);
@@ -14,8 +14,8 @@ void simplefs_readSuperBlock(struct superblock_t *superblock) {
   memcpy(superblock, tempBuf, sizeof(struct superblock_t));
 }
 
+// Helper function to write superblock from superblock_t structure to disk
 void simplefs_writeSuperBlock(struct superblock_t *superblock) {
-  // Helper function to write superblock from superblock_t structure to disk
   char tempBuf[BLOCKSIZE];
   memcpy(tempBuf, superblock, sizeof(struct superblock_t));
   lseek(DISK_FD, 0, SEEK_SET);
@@ -23,9 +23,8 @@ void simplefs_writeSuperBlock(struct superblock_t *superblock) {
   assert(ret == BLOCKSIZE);
 }
 
+// Format filesystem and initialise superblock and inodes with default values
 void simplefs_formatDisk() {
-  // Format filesystem and initialise superblock and inodes with default values
-
   FILE *fp;
   fp = fopen("simplefs", "w+");
   DISK_FD = fileno(fp);
@@ -60,8 +59,8 @@ void simplefs_formatDisk() {
   }
 }
 
+// Iterate over `inode_freelist` and return index of first empty inode
 int simplefs_allocInode() {
-  // Iterate over `inode_freelist` and return index of first empty inode
   struct superblock_t *superblock =
       (struct superblock_t *)malloc(sizeof(struct superblock_t));
   simplefs_readSuperBlock(superblock);
@@ -77,8 +76,8 @@ int simplefs_allocInode() {
   return -1;
 }
 
+// free inode with index `inodenum`
 void simplefs_freeInode(int inodenum) {
-  // free inode with index `inodenum`
   assert(inodenum < NUM_INODES);
   struct superblock_t *superblock =
       (struct superblock_t *)malloc(sizeof(struct superblock_t));
@@ -97,8 +96,8 @@ void simplefs_freeInode(int inodenum) {
   free(superblock);
 }
 
+// read inode with index `inodenum` from disk into `inodeptr`
 void simplefs_readInode(int inodenum, struct inode_t *inodeptr) {
-  // read inode with index `inodenum` from disk into `inodeptr`
   assert(inodenum < NUM_INODES);
   char tempBuf[BLOCKSIZE / NUM_INODES_PER_BLOCK];
   lseek(DISK_FD, BLOCKSIZE + inodenum * sizeof(struct inode_t), SEEK_SET);
@@ -107,8 +106,8 @@ void simplefs_readInode(int inodenum, struct inode_t *inodeptr) {
   memcpy(inodeptr, tempBuf, sizeof(struct inode_t));
 }
 
+// write `inodeptr` to inode with index `inodenum` on disk
 void simplefs_writeInode(int inodenum, struct inode_t *inodeptr) {
-  // write `inodeptr` to inode with index `inodenum` on disk
   assert(inodenum < NUM_INODES);
   char tempBuf[BLOCKSIZE / NUM_INODES_PER_BLOCK];
   memcpy(tempBuf, inodeptr, sizeof(struct inode_t));
@@ -117,8 +116,8 @@ void simplefs_writeInode(int inodenum, struct inode_t *inodeptr) {
   assert(ret == sizeof(struct inode_t));
 }
 
+// Iterate over `datablock_freelist` and return index of first empty inode
 int simplefs_allocDataBlock() {
-  // Iterate over `datablock_freelist` and return index of first empty inode
   struct superblock_t *superblock =
       (struct superblock_t *)malloc(sizeof(struct superblock_t));
   simplefs_readSuperBlock(superblock);
@@ -134,8 +133,8 @@ int simplefs_allocDataBlock() {
   return -1;
 }
 
+// free data block with index `blocknum`
 void simplefs_freeDataBlock(int blocknum) {
-  // free data block with index `blocknum`
   struct superblock_t *superblock =
       (struct superblock_t *)malloc(sizeof(struct superblock_t));
   simplefs_readSuperBlock(superblock);
@@ -145,8 +144,8 @@ void simplefs_freeDataBlock(int blocknum) {
   free(superblock);
 }
 
+// read data block with index `blocknum` from disk into `buf`
 void simplefs_readDataBlock(int blocknum, char *buf) {
-  // read data block with index `blocknum` from disk into `buf`
   assert(blocknum < NUM_DATA_BLOCKS);
   char tempBuf[BLOCKSIZE];
   lseek(DISK_FD, BLOCKSIZE * (5 + blocknum), SEEK_SET);
@@ -155,8 +154,8 @@ void simplefs_readDataBlock(int blocknum, char *buf) {
   memcpy(buf, tempBuf, BLOCKSIZE);
 }
 
+// fill `buf` with data from `blocknum`
 void simplefs_writeDataBlock(int blocknum, char *buf) {
-  // fill `buf` with data from `blocknum`
   assert(blocknum < NUM_DATA_BLOCKS);
   char tempBuf[BLOCKSIZE];
   lseek(DISK_FD, BLOCKSIZE * (5 + blocknum), SEEK_SET);
@@ -165,12 +164,12 @@ void simplefs_writeDataBlock(int blocknum, char *buf) {
   assert(ret == BLOCKSIZE);
 }
 
+// Prints Disk state information
 void simplefs_dump() {
-  // Prints Disk state information
-
   printf(
       "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<DISK "
       "STATE>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n");
+
   struct superblock_t *superblock =
       (struct superblock_t *)malloc(sizeof(struct superblock_t));
   simplefs_readSuperBlock(superblock);
@@ -207,6 +206,7 @@ void simplefs_dump() {
   }
   free(inode);
   free(superblock);
+
   printf("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>"
          ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n");
 }
