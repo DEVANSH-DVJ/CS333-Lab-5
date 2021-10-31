@@ -272,58 +272,31 @@ int simplefs_write(int file_handle, char *buf, int nbytes) {
     if (first_new <= i)
       is_new = 1;
 
-    // Case 1
-    if (offset + tempset == i * BLOCKSIZE &&
-        offset + nbytes >= (i + 1) * BLOCKSIZE) {
-      if (!is_new) {
-        simplefs_readDataBlock(inode->direct_blocks[i], tempBlockBuf);
-      }
-      memcpy(tempBlockBuf, buf + tempset, BLOCKSIZE);
-      simplefs_writeDataBlock(inode->direct_blocks[i], tempBlockBuf);
-      tempset += BLOCKSIZE;
+    // If we don't need this block then skip
+    if (offset + tempset > (i + 1) * BLOCKSIZE)
       continue;
+
+    // Read the data block, if not new
+    if (!is_new) {
+      simplefs_readDataBlock(inode->direct_blocks[i], tempBlockBuf);
     }
 
-    // Case 2
-    if (offset + tempset > i * BLOCKSIZE &&
-        offset + tempset <= (i + 1) * BLOCKSIZE &&
-        offset + nbytes >= (i + 1) * BLOCKSIZE) {
-      int ls = offset - (i * BLOCKSIZE);
-      if (!is_new) {
-        simplefs_readDataBlock(inode->direct_blocks[i], tempBlockBuf);
-      }
-      memcpy(tempBlockBuf + ls, buf + tempset, BLOCKSIZE - ls);
-      simplefs_writeDataBlock(inode->direct_blocks[i], tempBlockBuf);
-      tempset += BLOCKSIZE - ls;
-      continue;
-    }
+    // Set ls as left side diff and rs as right side diff
+    int ls = offset - (i * BLOCKSIZE);
+    int rs = (i + 1) * BLOCKSIZE - (offset + nbytes);
+    if (ls < 0)
+      ls = 0;
+    if (rs < 0)
+      rs = 0;
 
-    // Case 3
-    if (offset + tempset == i * BLOCKSIZE &&
-        offset + nbytes < (i + 1) * BLOCKSIZE) {
-      int rs = (i + 1) * BLOCKSIZE - (offset + nbytes);
-      if (!is_new) {
-        simplefs_readDataBlock(inode->direct_blocks[i], tempBlockBuf);
-      }
-      memcpy(tempBlockBuf, buf + tempset, BLOCKSIZE - rs);
-      simplefs_writeDataBlock(inode->direct_blocks[i], tempBlockBuf);
-      tempset += BLOCKSIZE - rs;
-      continue;
-    }
+    // Update the required portion of the data block
+    memcpy(tempBlockBuf + ls, buf + tempset, BLOCKSIZE - ls - rs);
 
-    // Case 4
-    if (offset + tempset > i * BLOCKSIZE &&
-        offset + nbytes < (i + 1) * BLOCKSIZE) {
-      int ls = offset - (i * BLOCKSIZE);
-      int rs = (i + 1) * BLOCKSIZE - (offset + nbytes);
-      if (!is_new) {
-        simplefs_readDataBlock(inode->direct_blocks[i], tempBlockBuf);
-      }
-      memcpy(tempBlockBuf + ls, buf + tempset, BLOCKSIZE - ls - rs);
-      simplefs_writeDataBlock(inode->direct_blocks[i], tempBlockBuf);
-      tempset += BLOCKSIZE - ls - rs;
-      continue;
-    }
+    // Write the data block
+    simplefs_writeDataBlock(inode->direct_blocks[i], tempBlockBuf);
+
+    // Update the tempset
+    tempset += BLOCKSIZE - ls - rs;
   }
 
   free(inode); // Free malloced data
