@@ -194,8 +194,9 @@ int simplefs_write(int file_handle, char *buf, int nbytes) {
       continue;
 
     if (first_new == -1)
-      first_new = 1;
+      first_new = i;
 
+    inode->direct_blocks[i] = simplefs_allocDataBlock();
     if (inode->direct_blocks[i] != -1)
       continue;
 
@@ -206,6 +207,8 @@ int simplefs_write(int file_handle, char *buf, int nbytes) {
     free(inode);
     return -1;
   }
+  if (inode->file_size < offset + nbytes)
+    inode->file_size = offset + nbytes;
   simplefs_writeInode(inodenum, inode);
 }
 
