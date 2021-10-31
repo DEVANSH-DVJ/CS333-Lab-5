@@ -107,10 +107,21 @@ void simplefs_close(int file_handle) {
   return;
 }
 
+//  read `nbytes` of data into `buf` from file pointed by `file_handle`
+//  starting at current offset
 int simplefs_read(int file_handle, char *buf, int nbytes) {
-  //  read `nbytes` of data into `buf` from file pointed by `file_handle`
-  //  starting at current offset
-  return -1;
+  if (nbytes <= 0)
+    return -1;
+
+  int offset = file_handle_array[file_handle].offset;
+  int inodenum = file_handle_array[file_handle].inode_number;
+  struct inode_t *inode = (struct inode_t *)malloc(sizeof(struct inode_t));
+  simplefs_readInode(inodenum, inode);
+
+  if (inode->file_size < offset + nbytes) {
+    free(inode);
+    return -1;
+  }
 }
 
 int simplefs_write(int file_handle, char *buf, int nbytes) {
