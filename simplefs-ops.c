@@ -165,6 +165,10 @@ int simplefs_read(int file_handle, char *buf, int nbytes) {
       continue;
     }
   }
+
+  free(inode);
+  memcpy(buf, tempBuf, nbytes);
+  return 0;
 }
 
 int simplefs_write(int file_handle, char *buf, int nbytes) {
