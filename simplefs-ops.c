@@ -159,7 +159,6 @@ int simplefs_read(int file_handle, char *buf, int nbytes) {
     return -1;
   }
 
-  char tempBuf[nbytes];
   char tempBlockBuf[BLOCKSIZE];
   int tempset = 0;
   // Iterate over all possible data blocks
@@ -172,50 +171,27 @@ int simplefs_read(int file_handle, char *buf, int nbytes) {
     if (offset + nbytes < i * BLOCKSIZE)
       break;
 
-    // Case 1
-    if (offset + tempset == i * BLOCKSIZE &&
-        offset + nbytes >= (i + 1) * BLOCKSIZE) {
-      simplefs_readDataBlock(inode->direct_blocks[i], tempBlockBuf);
-      memcpy(tempBuf + tempset, tempBlockBuf, BLOCKSIZE);
-      tempset += BLOCKSIZE;
+    // If we don't need this block then skip
+    if (offset + tempset > (i + 1) * BLOCKSIZE)
       continue;
-    }
 
-    // Case 2
-    if (offset + tempset > i * BLOCKSIZE &&
-        offset + tempset <= (i + 1) * BLOCKSIZE &&
-        offset + nbytes >= (i + 1) * BLOCKSIZE) {
-      int ls = offset - (i * BLOCKSIZE);
-      simplefs_readDataBlock(inode->direct_blocks[i], tempBlockBuf);
-      memcpy(tempBuf + tempset, tempBlockBuf + ls, BLOCKSIZE - ls);
-      tempset += BLOCKSIZE - ls;
-      continue;
-    }
+    // Set ls as left side diff and rs as right side diff
+    int ls = offset - (i * BLOCKSIZE);
+    int rs = (i + 1) * BLOCKSIZE - (offset + nbytes);
+    if (ls < 0)
+      ls = 0;
+    if (rs < 0)
+      rs = 0;
 
-    // Case 3
-    if (offset + tempset == i * BLOCKSIZE &&
-        offset + nbytes < (i + 1) * BLOCKSIZE) {
-      int rs = (i + 1) * BLOCKSIZE - (offset + nbytes);
-      simplefs_readDataBlock(inode->direct_blocks[i], tempBlockBuf);
-      memcpy(tempBuf + tempset, tempBlockBuf, BLOCKSIZE - rs);
-      tempset += BLOCKSIZE - rs;
-      continue;
-    }
+    // Read the data block
+    simplefs_readDataBlock(inode->direct_blocks[i], tempBlockBuf);
 
-    // Case 4
-    if (offset + tempset > i * BLOCKSIZE &&
-        offset + nbytes < (i + 1) * BLOCKSIZE) {
-      int ls = offset - (i * BLOCKSIZE);
-      int rs = (i + 1) * BLOCKSIZE - (offset + nbytes);
-      simplefs_readDataBlock(inode->direct_blocks[i], tempBlockBuf);
-      memcpy(tempBuf + tempset, tempBlockBuf + ls, BLOCKSIZE - ls - rs);
-      tempset += BLOCKSIZE - ls - rs;
-      continue;
-    }
+    // Copy the required portion of the data block
+    memcpy(buf + tempset, tempBlockBuf + ls, BLOCKSIZE - ls - rs);
+
+    // Update the tempset
+    tempset += BLOCKSIZE - ls - rs;
   }
-
-  // Copy data to the buff
-  memcpy(buf, tempBuf, nbytes);
 
   free(inode); // Free malloced data
   return 0;
